@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.14
+# v0.19.22
 
 #> [frontmatter]
 #> chapter = 1
@@ -26,6 +26,18 @@ macro bind(def, element)
     end
 end
 
+# ╔═╡ 74b008f6-ed6b-11ea-291f-b3791d6d1b35
+begin
+	using Colors, ColorVectorSpace, ImageShow, FileIO, ImageIO
+	using PlutoUI
+	using HypertextLiteral
+end
+
+# ╔═╡ b2dfa31c-e094-42e4-b5d2-f2a63078476d
+md"""
+# Lecture 1.1: Images as data arrays
+"""
+
 # ╔═╡ d07fcdb0-7afc-4a25-b68a-49fd1e3405e7
 PlutoUI.TableOfContents(aside=true)
 
@@ -35,13 +47,6 @@ md"""
 
 _When running this notebook for the first time, this could take up to 15 minutes. Hang in there!_
 """
-
-# ╔═╡ 74b008f6-ed6b-11ea-291f-b3791d6d1b35
-begin
-	using Colors, ColorVectorSpace, ImageShow, FileIO, ImageIO
-	using PlutoUI
-	using HypertextLiteral
-end
 
 # ╔═╡ ca1b507e-6017-11eb-34e6-6b85cd189002
 md"""
@@ -164,39 +169,35 @@ We can use the `Images.jl` package to load an image file in three steps.
 
 # ╔═╡ 62fa19da-64c6-11eb-0038-5d40a6890cf5
 md"""
-Step 1: (from internet) we specify the URL (web address) to download from:
+**Step 1**: (from internet) we specify the URL (web address) to download from:
 $(html"<br>")
 (note that Pluto places results before commands because some people believe
 output is more interesting than code.  This takes some getting used to.)
 """
 
 # ╔═╡ 34ee0954-601e-11eb-1912-97dc2937fd52
-url = "https://user-images.githubusercontent.com/6933510/107239146-dcc3fd00-6a28-11eb-8c7b-41aaf6618935.png" 
+url = "https://ih1.redbubble.net/image.1457351022.7537/st,small,507x507-pad,600x600,f8f8f8.jpg" 
 
 # ╔═╡ 9180fbcc-601e-11eb-0c22-c920dc7ee9a9
 md"""
-Step 2: Now we use the aptly-named `download` function to download the image file to our own computer. (Philip is Prof. Edelman's corgi.)
+**Step 2**: Now we use the aptly-named `download` function to download the image file to our own computer. (Philip is Prof. Edelman's corgi.)
 """
 
 # ╔═╡ 34ffc3d8-601e-11eb-161c-6f9a07c5fd78
-philip_filename = download(url) # download to a local file. The filename is returned
+julia_logo_filename = download(url) # download to a local file. The filename is returned
 
 # ╔═╡ abaaa980-601e-11eb-0f71-8ff02269b775
 md"""
-Step 3:
-Using the `Images.jl` package (loaded at the start of this notebook; scroll up and take a look.) we can **load** the file, which automatically converts it into usable data. We'll store the result in a variable. (Remember the code is after the output.)
+**Step 3**:
+Using the `Images.jl` package (*loaded at the start of this notebook; scroll up and take a look.*) we can **load** the file, which automatically converts it into usable data. We'll store the result in a variable. (Remember the code is after the output.)
 """
 
 # ╔═╡ aafe76a6-601e-11eb-1ff5-01885c5238da
-philip = load(philip_filename)
-
-# ╔═╡ e86ed944-ee05-11ea-3e0f-d70fc73b789c
-md"_Hi there Philip_"
+julia_logo = load(julia_logo_filename)
 
 # ╔═╡ c99d2aa8-601e-11eb-3469-497a246db17c
 md"""
-We see that the Pluto notebook has recognised that we created an object representing an image, and automatically displayed the resulting image of Philip, the cute Welsh Pembroke corgi and co-professor of this course.
-Poor Philip will undergo quite a few transformations as we go along!
+We see that the Pluto notebook has recognised that we created an object representing an image, and automatically displayed the resulting image of julia.
 """
 
 # ╔═╡ 11dff4ce-6bca-11eb-1056-c1345c796ed4
@@ -216,18 +217,6 @@ Even more fun is to use your own webcam. Try pressing the enable button below. T
 press the camera to capture an image. Kind of fun to keep pressing the button as you move your hand etc.
 """
 
-# ╔═╡ d6742ea0-1106-4f3c-a5b8-a31a48d33f19
-@bind webcam_data1 camera_input()
-
-# ╔═╡ 1d7375b7-7ea6-4d67-ab73-1c69d6b8b87f
-myface1 = process_raw_camera_data(webcam_data1);
-
-# ╔═╡ 6224c74b-8915-4983-abf0-30e6ba04a46d
-[
-	myface1              myface1[   :    , end:-1:1]
-	myface1[end:-1:1, :] myface1[end:-1:1, end:-1:1]
-]
-
 # ╔═╡ cef1a95a-64c6-11eb-15e7-636a3621d727
 md"""
 ## Inspecting your data
@@ -244,7 +233,7 @@ The first thing we might want to know is the size of the image:
 """
 
 # ╔═╡ 75c5c85a-602c-11eb-2fb1-f7e7f2c5d04b
-philip_size = size(philip)
+julia_size = size(julia_logo)
 
 # ╔═╡ 77f93eb8-602c-11eb-1f38-efa56cc93ca5
 md"""
@@ -252,10 +241,10 @@ Julia returns a pair of two numbers. Comparing these with the picture of the ima
 """
 
 # ╔═╡ 96b7d801-c427-4e27-ab1f-e2fd18fc24d0
-philip_height = philip_size[1]
+julia_height = julia_size[1]
 
 # ╔═╡ f08d02af-6e38-4ace-8b11-7af4930b64ea
-philip_width = philip_size[2]
+julia_width = julia_size[2]
 
 # ╔═╡ f9244264-64c6-11eb-23a6-cfa76f8aff6d
 md"""
@@ -270,7 +259,7 @@ In Julia we use (square) brackets, `[` and `]` for indexing:
 """
 
 # ╔═╡ bd22d09a-64c7-11eb-146f-67733b8be241
-a_pixel = philip[200, 100]
+a_pixel = julia_logo[200, 100]
 
 # ╔═╡ 28860d48-64c8-11eb-240f-e1232b3638df
 md"""
@@ -279,19 +268,10 @@ We see that Julia knows to draw our pixel object for us a block of the relevant 
 When we index into an image like this, the first number indicates the *row* in the image, starting from the top, and the second the *column*, starting from the left. In Julia, the first row and column are numbered starting from 1, not from 0 as in some other programming languages.
 """
 
-# ╔═╡ 4ef99715-4d8d-4f9d-bf0b-8df9907a14cf
-
-
 # ╔═╡ a510fc33-406e-4fb5-be83-9e4b5578717c
 md"""
 We can also use variables as indices...
 """
-
-# ╔═╡ 94b77934-713e-11eb-18cf-c5dc5e7afc5b
-row_i,col_i
-
-# ╔═╡ ff762861-b186-4eb0-9582-0ce66ca10f60
-philip[row_i, col_i]
 
 # ╔═╡ 13844ebf-52c4-47e9-bda4-106a02fad9d7
 md"""
@@ -299,10 +279,16 @@ md"""
 """
 
 # ╔═╡ 08d61afb-c641-4aa9-b995-2552af89f3b8
-@bind row_i Slider(1:size(philip)[1], show_value=true)
+@bind row_i Slider(1:size(julia_logo)[1], show_value=true)
 
 # ╔═╡ 6511a498-7ac9-445b-9c15-ec02d09783fe
-@bind col_i Slider(1:size(philip)[2], show_value=true)
+@bind col_i Slider(1:size(julia_logo)[2], show_value=true)
+
+# ╔═╡ 94b77934-713e-11eb-18cf-c5dc5e7afc5b
+row_i,col_i
+
+# ╔═╡ ff762861-b186-4eb0-9582-0ce66ca10f60
+julia_logo[row_i, col_i]
 
 # ╔═╡ c9ed950c-dcd9-4296-a431-ee0f36d5b557
 md"""
@@ -312,7 +298,7 @@ We saw that we can use the **row number** and **column number** to index a _sing
 """
 
 # ╔═╡ f0796032-8105-4f6d-b5ee-3647b052f2f6
-philip[550:650, 1:philip_width]
+julia_logo[1:julia_height-100, 50:julia_width]
 
 # ╔═╡ b9be8761-a9c9-49eb-ba1b-527d12097362
 md"""
@@ -330,7 +316,7 @@ You can also use a `:` without start and end to mean "_every index_"
 """
 
 # ╔═╡ 4e6a31d6-1ef8-4a69-b346-ad58cfc4d8a5
-philip[550:650, :]
+julia_logo[200:julia_height-200, :]
 
 # ╔═╡ e11f0e47-02d9-48a6-9b1a-e313c18db129
 md"""
@@ -338,26 +324,26 @@ Let's get a single row of pixels:
 """
 
 # ╔═╡ 9e447eab-14b6-45d8-83ab-1f7f1f1c70d2
-philip[550, :]
+julia_logo[222, :]
 
 # ╔═╡ c926435c-c648-419c-9951-ac8a1d4f3b92
-philip_head = philip[470:800, 140:410]
+julia_section = julia_logo[20:120, 40:julia_width]
 
 # ╔═╡ 32e7e51c-dd0d-483d-95cb-e6043f2b2975
 md"""
-#### Scroll in on Philip's nose!
+#### Scroll in on Julia's logo!
 
 Use the widgets below (slide left and right sides).
 """
 
 # ╔═╡ 4b64e1f2-d0ca-4e22-a89d-1d9a16bd6788
-@bind range_rows RangeSlider(1:size(philip_head)[1])
+@bind range_rows RangeSlider(1:julia_height)
 
 # ╔═╡ 85919db9-1444-4904-930f-ba572cff9460
-@bind range_cols RangeSlider(1:size(philip_head)[2])
+@bind range_cols RangeSlider(1:julia_width)
 
 # ╔═╡ 2ac47b91-bbc3-49ae-9bf5-4def30ff46f4
-nose = philip_head[range_rows, range_cols]
+nose = julia_logo[range_rows, range_cols]
 
 # ╔═╡ 5a0cc342-64c9-11eb-1211-f1b06d652497
 md"""
@@ -382,7 +368,7 @@ We will ignore this complexity by using a standard method of representing colour
 
 # ╔═╡ 40886d36-64c9-11eb-3c69-4b68673a6dde
 md"""
-We can create a new color in Julia as follows:
+**We can create a new color in Julia as follows**:
 """
 
 # ╔═╡ 552235ec-64c9-11eb-1f7f-f76da2818cb3
@@ -401,14 +387,14 @@ RGB(test_r, test_g, test_b)
 
 # ╔═╡ f6cc03a0-ee07-11ea-17d8-013991514d42
 md"""
-#### Exercise 2.5
+### Exercise 2.5
 👉 Write a function `invert` that inverts a color, i.e. sends $(r, g, b)$ to $(1 - r, 1-g, 1-b)$.
 """
 
 # ╔═╡ 63e8d636-ee0b-11ea-173d-bd3327347d55
 function invert(color::AbstractRGB)
 	
-	return missing
+	return RGB(1-color.r, 1-color.g, 1-color.b)
 end
 
 # ╔═╡ 2cc2f84e-ee0d-11ea-373b-e7ad3204bb00
@@ -430,7 +416,7 @@ invert(color_red)
 md"Can you invert the picture of Philip?"
 
 # ╔═╡ 943103e2-ee0b-11ea-33aa-75a8a1529931
-philip_inverted = missing
+julia_inverted = invert(julia_logo)
 
 # ╔═╡ 2ee543b2-64d6-11eb-3c39-c5660141787e
 md"""
@@ -444,7 +430,7 @@ We do this by assigning a new value to the color of a pixel:
 
 # ╔═╡ 53bad296-4c7b-471f-b481-0e9423a9288a
 let
-	temp = copy(philip_head)
+	temp = copy(julia_section)
 	temp[100, 200] = RGB(1.0, 0.0, 0.0)
 	temp
 end
@@ -458,7 +444,7 @@ For example, we can extract a horizontal strip 1 pixel tall:
 """
 
 # ╔═╡ e29b7954-64cb-11eb-2768-47de07766055
-philip_head[50, 50:100]
+julia_section[50, 50:100]
 
 # ╔═╡ 8e7c4866-64cc-11eb-0457-85be566a8966
 md"""
@@ -474,7 +460,7 @@ And then modify it:
 
 # ╔═╡ 4f03f651-56ed-4361-b954-e6848ac56089
 let
-	temp = copy(philip_head)
+	temp = copy(julia_section)
 	temp[50, 50:100] .= RGB(1.0, 0.0, 0.0)
 	temp
 end
@@ -486,7 +472,7 @@ Similarly we can modify a whole rectangular block of pixels:
 
 # ╔═╡ 1bd53326-d705-4d1a-bf8f-5d7f2a4e696f
 let
-	temp = copy(philip_head)
+	temp = copy(julia_section)
 	temp[50:100, 50:100] .= RGB(1.0, 0.0, 0.0)
 	temp
 end
@@ -500,31 +486,9 @@ md"""
 
 # ╔═╡ b6b65b94-edf0-11ea-3686-fbff0ff53d08
 function create_bar()
-	
-	return missing
-end
-
-# ╔═╡ d862fb16-edf1-11ea-36ec-615d521e6bc0
-colored_line(create_bar())
-
-# ╔═╡ e3394c8a-edf0-11ea-1bb8-619f7abb6881
-if !@isdefined(create_bar)
-	not_defined(:create_bar)
-else
-	let
-		result = create_bar()
-		if ismissing(result)
-			still_missing()
-		elseif isnothing(result)
-			keep_working(md"Did you forget to write `return`?")
-		elseif !(result isa Vector) || length(result) != 100
-			keep_working(md"The result should be a `Vector` with 100 elements.")
-		elseif result[[1,50,100]] != [0,1,0]
-			keep_working()
-		else
-			correct()
-		end
-	end
+	v = zeros(100)
+	v[40:60] .= 1
+	return v
 end
 
 # ╔═╡ 693af19c-64cc-11eb-31f3-57ab2fbae597
@@ -538,7 +502,7 @@ Maybe we would also like to reduce the size of this image, since it's rather lar
 """
 
 # ╔═╡ ae542fe4-64cc-11eb-29fc-73b7a66314a9
-reduced_image = philip[1:10:end, 1:10:end]
+reduced_image = julia_logo[1:10:end, 1:10:end]
 
 # ╔═╡ c29292b8-64cc-11eb-28db-b52c46e865e6
 md"""
@@ -565,7 +529,7 @@ Finally, we want to be able to save our new creation to a file. To do so, you ca
 """
 
 # ╔═╡ 3db09d92-64cc-11eb-0333-45193c0fd1fe
-save("reduced_phil.png", reduced_image)
+save("reduced_julia_logo.png", reduced_image)
 
 # ╔═╡ 61606acc-6bcc-11eb-2c80-69ceec9f9702
 md"""
@@ -609,7 +573,8 @@ md"""
 ## Creating vectors and matrices
 Julia has strong support for arrays of any dimension.
 
-Vectors, or one-dimensional arrays, are written using square brackets and commas:
+### Vectors or lists
+**Vectors**, or one-dimensional arrays, are written using square brackets and commas:
 """
 
 # ╔═╡ f4b0aa23-2d76-4d88-b2a4-3807e88d27ce
@@ -620,6 +585,7 @@ Vectors, or one-dimensional arrays, are written using square brackets and commas
 
 # ╔═╡ 2b0e6450-64d4-11eb-182b-ff1bd515b56f
 md"""
+### Matrices or 2D-arrays
 Matrices, or two-dimensional arrays, also use square brackets, but with spaces and new lines instead of commas:
 """
 
@@ -664,11 +630,11 @@ We often want to join vectors and matrices together. We can do so using an exten
 """
 
 # ╔═╡ 7d9ad134-60ee-11eb-1b2a-a7d63f3a7a2d
-[philip_head  philip_head]
+[julia_logo julia_logo]
 
 # ╔═╡ 8433b862-60ee-11eb-0cfc-add2b72997dc
-[philip_head                   reverse(philip_head, dims=2)
- reverse(philip_head, dims=1)  rot180(philip_head)]
+[julia_logo                   reverse(julia_logo, dims=2)
+ reverse(julia_logo, dims=1)  rot180(julia_logo)]
 
 # ╔═╡ 5e52d12e-64d7-11eb-0905-c9038a404e24
 md"""
@@ -725,22 +691,27 @@ md"""
 > Make three sliders with variables `r`, `g` and `b`. Then make a single color patch with the RGB color given by those values.
 """
 
+# ╔═╡ 510fe915-3b45-4dc6-a530-d00a1b6deebb
+md"""
+#### Exercise: Solution
+"""
+
+# ╔═╡ 5993011d-6cb0-43ff-87e4-6500e74a2eab
+@bind redval Slider(0:0.1:1, show_value=true)
+
+# ╔═╡ 8ff1e96a-4906-4fe8-94bc-9f184feb8834
+@bind greenval Slider(0:0.1:1, show_value=true)
+
+# ╔═╡ 70d5ed68-94b2-4c67-8b75-6681d4be2e99
+@bind blueval Slider(0:0.1:1, show_value=true)
+
+# ╔═╡ 1b2261e5-fae2-4f0b-a2c6-15364f6ac53a
+RGB(redval, greenval, blueval)
+
 # ╔═╡ 576d5e3a-64d8-11eb-10c9-876be31f7830
 md"""
 We can do the same to create different size matrices, by creating two sliders, one for reds and one for greens. Try it out!
 """
-
-# ╔═╡ 2a94a2cf-b697-4b0b-afd0-af2e35af2bb1
-@bind webcam_data camera_input()
-
-# ╔═╡ 3e0ece65-b8a7-4be7-ae44-6d7210c2e15b
-myface = process_raw_camera_data(webcam_data);
-
-# ╔═╡ 4ee18bee-13e6-4478-b2ca-ab66100e57ec
-[
-	myface              myface[   :    , end:-1:1]
-	myface[end:-1:1, :] myface[end:-1:1, end:-1:1]
-]
 
 # ╔═╡ ace86c8a-60ee-11eb-34ef-93c54abc7b1a
 md"""
@@ -760,14 +731,14 @@ md"""
 ----
 """
 
-# ╔═╡ 45815734-ee0a-11ea-2982-595e1fc0e7b1
-bigbreak
-
 # ╔═╡ 5da8cbe8-eded-11ea-2e43-c5b7cc71e133
 begin
 	colored_line(x::Vector{<:Real}) = Gray.(Float64.((hcat(x)')))
 	colored_line(x::Any) = nothing
 end
+
+# ╔═╡ d862fb16-edf1-11ea-36ec-615d521e6bc0
+colored_line(create_bar())
 
 # ╔═╡ e074560a-601b-11eb-340e-47acd64f03b2
 hint(text) = Markdown.MD(Markdown.Admonition("hint", "Hint", [text]))
@@ -790,8 +761,31 @@ correct(text=rand(yays)) = Markdown.MD(Markdown.Admonition("correct", "Got it!",
 # ╔═╡ e0a4fc10-601b-11eb-211d-03570aca2726
 not_defined(variable_name) = Markdown.MD(Markdown.Admonition("danger", "Oopsie!", [md"Make sure that you define a variable called **$(Markdown.Code(string(variable_name)))**"]))
 
+# ╔═╡ e3394c8a-edf0-11ea-1bb8-619f7abb6881
+if !@isdefined(create_bar)
+	not_defined(:create_bar)
+else
+	let
+		result = create_bar()
+		if ismissing(result)
+			still_missing()
+		elseif isnothing(result)
+			keep_working(md"Did you forget to write `return`?")
+		elseif !(result isa Vector) || length(result) != 100
+			keep_working(md"The result should be a `Vector` with 100 elements.")
+		elseif result[[1,50,100]] != [0,1,0]
+			keep_working()
+		else
+			correct()
+		end
+	end
+end
+
 # ╔═╡ e0a6031c-601b-11eb-27a5-65140dd92897
 bigbreak = html"<br><br><br><br><br>";
+
+# ╔═╡ 45815734-ee0a-11ea-2982-595e1fc0e7b1
+bigbreak
 
 # ╔═╡ e0b15582-601b-11eb-26d6-bbf708933bc8
 function camera_input(;max_size=150, default_url="https://i.imgur.com/SUmi94P.png")
@@ -997,6 +991,12 @@ function camera_input(;max_size=150, default_url="https://i.imgur.com/SUmi94P.pn
 """ |> HTML
 end
 
+# ╔═╡ d6742ea0-1106-4f3c-a5b8-a31a48d33f19
+@bind webcam_data1 camera_input()
+
+# ╔═╡ 2a94a2cf-b697-4b0b-afd0-af2e35af2bb1
+@bind webcam_data camera_input()
+
 # ╔═╡ e891fce0-601b-11eb-383b-bde5b128822e
 
 function process_raw_camera_data(raw_camera_data)
@@ -1031,6 +1031,24 @@ function process_raw_camera_data(raw_camera_data)
 	
 	RGB.(reds, greens, blues)
 end
+
+# ╔═╡ 1d7375b7-7ea6-4d67-ab73-1c69d6b8b87f
+myface1 = process_raw_camera_data(webcam_data1);
+
+# ╔═╡ 6224c74b-8915-4983-abf0-30e6ba04a46d
+[
+	myface1              myface1[   :    , end:-1:1]
+	myface1[end:-1:1, :] myface1[end:-1:1, end:-1:1]
+]
+
+# ╔═╡ 3e0ece65-b8a7-4be7-ae44-6d7210c2e15b
+myface = process_raw_camera_data(webcam_data);
+
+# ╔═╡ 4ee18bee-13e6-4478-b2ca-ab66100e57ec
+[
+	myface              myface[   :    , end:-1:1]
+	myface[end:-1:1, :] myface[end:-1:1, end:-1:1]
+]
 
 # ╔═╡ 3ef77236-1867-4d02-8af2-ff4777fcd6d9
 exercise_css = html"""
@@ -1206,7 +1224,7 @@ version = "4.3.0"
 [[CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "0.5.2+0"
+version = "1.0.1+0"
 
 [[DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
@@ -1598,7 +1616,7 @@ version = "1.0.0"
 [[Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
-version = "1.10.0"
+version = "1.10.1"
 
 [[TensorCore]]
 deps = ["LinearAlgebra"]
@@ -1667,6 +1685,7 @@ version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
+# ╟─b2dfa31c-e094-42e4-b5d2-f2a63078476d
 # ╟─d07fcdb0-7afc-4a25-b68a-49fd1e3405e7
 # ╟─9b49500c-0164-4556-a17b-7595e35c5ede
 # ╠═74b008f6-ed6b-11ea-291f-b3791d6d1b35
@@ -1690,7 +1709,6 @@ version = "17.4.0+0"
 # ╠═34ffc3d8-601e-11eb-161c-6f9a07c5fd78
 # ╟─abaaa980-601e-11eb-0f71-8ff02269b775
 # ╠═aafe76a6-601e-11eb-1ff5-01885c5238da
-# ╟─e86ed944-ee05-11ea-3e0f-d70fc73b789c
 # ╟─c99d2aa8-601e-11eb-3469-497a246db17c
 # ╟─11dff4ce-6bca-11eb-1056-c1345c796ed4
 # ╟─efef3a32-6bc9-11eb-17e9-dd2171be9c21
@@ -1708,7 +1726,6 @@ version = "17.4.0+0"
 # ╟─f9244264-64c6-11eb-23a6-cfa76f8aff6d
 # ╠═bd22d09a-64c7-11eb-146f-67733b8be241
 # ╟─28860d48-64c8-11eb-240f-e1232b3638df
-# ╟─4ef99715-4d8d-4f9d-bf0b-8df9907a14cf
 # ╟─a510fc33-406e-4fb5-be83-9e4b5578717c
 # ╠═94b77934-713e-11eb-18cf-c5dc5e7afc5b
 # ╠═ff762861-b186-4eb0-9582-0ce66ca10f60
@@ -1789,6 +1806,11 @@ version = "17.4.0+0"
 # ╟─1c539b02-64d8-11eb-3505-c9288357d139
 # ╟─10f6e6da-64d8-11eb-366f-11f16e73043b
 # ╟─82a8314c-64d8-11eb-1acb-e33625381178
+# ╟─510fe915-3b45-4dc6-a530-d00a1b6deebb
+# ╠═5993011d-6cb0-43ff-87e4-6500e74a2eab
+# ╠═8ff1e96a-4906-4fe8-94bc-9f184feb8834
+# ╠═70d5ed68-94b2-4c67-8b75-6681d4be2e99
+# ╠═1b2261e5-fae2-4f0b-a2c6-15364f6ac53a
 # ╟─576d5e3a-64d8-11eb-10c9-876be31f7830
 # ╠═2a94a2cf-b697-4b0b-afd0-af2e35af2bb1
 # ╠═3e0ece65-b8a7-4be7-ae44-6d7210c2e15b
