@@ -31,3 +31,5 @@ legacy
 *.png
 *.jpg
 *.jpeg
+# Editor
+.vscode
